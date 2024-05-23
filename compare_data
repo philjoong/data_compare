@@ -1,0 +1,818 @@
+from P4 import P4, P4Exception
+import sys
+import os
+os.environ['P4CHARSET'] = 'utf8'
+import pandas as pd
+import numpy as np
+import re
+import traceback
+import datetime
+from openpyxl import load_workbook
+from openpyxl.styles import Font
+from openpyxl.styles import PatternFill, Font, Alignment
+import getpass
+
+p4 = P4()
+
+# Perforce 서버 설정
+p4.port = "" # 경로 제거
+p4.user = "" # 경로 제거
+
+
+# 작업 순서
+# 1) 데이터 변경된 뽑기풀 있는지 체크
+# 2) 기획서에서 해당 뽑기풀 체크
+# 3) 기획<>데이터 비교하여 결과 출력
+
+def extract_number(s):
+    # 문자열에서 숫자를 찾아 리스트로 반환
+    numbers = re.findall(r"[\d\.]+", s)[0]
+    numbers_int = int(float(numbers))
+    # 찾아낸 숫자들을 연결하여 하나의 숫자로 반환
+    return numbers_int if numbers_int else None
+
+try:
+    qa_p4 = [ "" # 경로 제거]
+    for i, qa in enumerate(qa_p4):
+        print(f"{i}: {qa}")
+    qa_index = int(input("사용하시는 계정을 선택해주세요.: "))
+    if qa_index == 0:
+        p4.user =  "" # 경로 제거
+    else:
+        p4.user =  "" # 경로 제거
+    p4.connect()  # 서버에 연결
+    password = getpass.getpass("Enter the password: 입력 시 텍스트가 출력되지 않습니다. 비밀번호를 끝까지 입력하시고 엔터 키를 눌러주세요.")
+    p4.run_login(password=password)
+
+    depot_directory= [ "" # 경로 제거]
+    for i, stream in enumerate(depot_directory):
+        print(f"{i}: {stream}")
+    stream_index = int(input("Enter the number of the stream to connect: "))
+    temp_depot_directory =  "" # 경로 제거
+    stream_choice = depot_directory[stream_index]
+
+    server_choice = [ "" # 경로 제거]
+    for i, server in enumerate(server_choice):
+        print(f"{i}: {server}")
+    server_index = int(input("Enter the number of the stream to connect: "))
+
+    design_path =  "" # 경로 제거
+ 
+    files = p4.run_files(design_path + "*")
+    if server_index == 0:
+        files.append({'depotFile': ' "" # 경로 제거'})
+    # 파일 목록 출력
+    for i, file in enumerate(files):
+        print(f"{i}: {file['depotFile']}")
+    file_index = int(input("Select a file by its number: "))
+    selected_design_file_path = files[file_index]['depotFile']
+    file_design_pool_content = p4.run_print(selected_design_file_path)[1]  # 첫번째 요소는 파일 정보, 두번째 요소가 파일 내용
+
+    pool_check_choice = ""
+    pool_type = os.path.basename(selected_design_file_path)
+    if "" # 경로 제거in pool_type:
+        pool_check_choice = "" # 경로 제거
+    elif  "" # 경로 제거 in pool_type:
+        pool_check_choice =  "" # 경로 제거
+    elif " "" # 경로 제거in pool_type:
+        pool_check_choice =  "" # 경로 제거
+    elif " "" # 경로 제거" in pool_type:
+        pool_check_choice =  "" # 경로 제거
+
+    revision_choice = ["가장 최신 2개 revision 간 비교", "1주 전 최신 revision과 최신 revision 비교.(이번 주 작업자가 풀을 여러 번에 걸처 수정했을 때 사용)", "revision 직접 선택하기", "(전수조사)"]
+    for i, _choice in enumerate(revision_choice):
+        print(f"{i}: {_choice}")
+    revision_choice_index = int(input("비교 진행할 revision 선택 방법: "))
+
+    abs_path = f'{server_choice[server_index]}_{pool_check_choice}.xlsx'
+    gacha_pool_path = ""
+    gacha_pool_path_open = ""
+    retry_pool_path = ""
+    Gacha_df = None
+    Combine_df = None
+    Retry_df = None
+    Open_Gacha_df = None
+    df_pool_ids = None
+    # 변경된 prop을 추적할 리스트 초기화
+    changed_group_ids = []
+    changed_group_ids_open = []
+    pool_ids_path =  "" # 경로 제거
+    pool_parts_path = " "" # 경로 제거
+    retry_parts_path =  "" # 경로 제거
+    pool_ids_sheetName =  "" # 경로 제거
+    combine_sheetName = " "" # 경로 제거
+    retry_sheetName =  "" # 경로 제거
+    pool_ids_index =  "" # 경로 제거
+    retry_index_id = " "" # 경로 제거
+    retry_prob_text = ' "" # 경로 제거
+    result_col_lists = [ "" # 경로 제거]
+    combine_col_lists = [ "" # 경로 제거]
+    if pool_check_choice == "#제거":
+        # 아가시온
+        pool_ids_path = "#제거
+        pool_ids_sheetName = #제거
+        pool_parts_path = #제거
+        retry_parts_path = #제거
+        combine_sheetName = #제거
+        retry_sheetName = #제거
+        retry_index_id =#제거
+        result_col_lists = [#제거]
+    elif pool_check_choice == "#제거
+    elif pool_check_choice == "#제거
+    local_ids_file_path = ""
+    first_revision_local_file_path = ""
+    second_revision_local_file_path = ""
+    _first_revision_local_file_path = ""
+    _second_revision_local_file_path = ""
+    local_design_pool_path = ""
+
+    gacha_pool_path = temp_depot_directory + pool_parts_path + ".xlsx"
+    retry_pool_path = temp_depot_directory + retry_parts_path + ".xlsx"
+    if server_index == 1: # FAFU
+        gacha_pool_path =#제거
+        gacha_pool_path_open =#제거
+        retry_pool_path = #제거
+        if pool_check_choice == "#제거
+            raise Exception()
+
+    local_folder_path = "./byProductPoll"
+    # 해당 경로에 폴더가 없으면 생성
+    if not os.path.exists(local_folder_path):
+        os.makedirs(local_folder_path)
+    local_design_pool_path = os.path.join(local_folder_path, f"{server_choice[server_index]}_{pool_check_choice}_design.xlsm")
+
+    with open(local_design_pool_path, "wb") as file:
+        file.write(file_design_pool_content)
+    print(f"File saved to {local_design_pool_path}")
+
+    # 해당 경로에 폴더가 없으면 생성
+    if not os.path.exists(local_folder_path):
+        os.makedirs(local_folder_path)
+
+    iter_number = 0
+    if server_index == 0:
+        iter_number = 1
+    elif server_index == 1:
+        iter_number = 6
+    elif server_index == 2 or server_index == 3:
+        iter_number = 4
+
+    for iter_num in range(iter_number):
+        selected_file_path = gacha_pool_path
+        retry_file_path = retry_pool_path
+        if iter_num == 0:#제거
+            if server_index == 1:
+                if stream_choice in [#제거]:
+                    #제거
+                    continue
+                abs_path = #제거
+            if server_index == 2:
+               #제거
+            if server_index == 3:
+               #제거
+        elif iter_num == 1:#제거
+           #제거
+        elif iter_num == 2: #제거
+           #제거
+        elif iter_num == 3:#제거
+            #제거
+        elif iter_num == 4: ##제거
+            #제거
+        elif iter_num == 5: #제거
+           #제거
+        retry_check_go = True
+        if retry_file_path == "":
+            retry_check_go = False
+        if revision_choice_index == 2:
+            today = datetime.datetime.now()
+            ninety_days_ago = today - datetime.timedelta(days=180)
+            today_str = today.strftime("%Y/%m/%d")
+            one_week_ago_str = ninety_days_ago.strftime("%Y/%m/%d")
+            # 최근 180 동안의 리비전 검색
+            changes = p4.run_changes("-m10", f"@{one_week_ago_str}", selected_file_path)
+
+            # 리비전 목록 출력
+            print("revisions:")
+            for i, change in enumerate(changes):
+                change_date = datetime.datetime.fromtimestamp(int(change['time'])).strftime('%Y-%m-%d %H:%M:%S')
+                print(f"{i}: Change {change['change']} (Date: {change_date}) - {change['desc'].strip()}")
+
+            # 사용자가 리비전 선택
+            second_revision_index = int(input("비교할 예전 파일 number: "))
+            first_revision_index = int(input("비교할 최신 파일 number: "))
+
+            first_revision = changes[first_revision_index]['change']
+            second_revision = changes[second_revision_index]['change']
+            first_revision_file_content = p4.run_print(f"{selected_file_path}@{first_revision}")[1]
+            first_revision_local_file_path = os.path.join(local_folder_path, f"{first_revision}_{os.path.basename(selected_file_path)}")
+            with open(first_revision_local_file_path, "wb") as file:
+                file.write(first_revision_file_content)
+            print(f"File saved to {first_revision_local_file_path}")
+
+            # 두 번째 리비전 파일 내용 가져오기 및 로컬에 저장
+            second_revision_file_content = p4.run_print(f"{selected_file_path}@{second_revision}")[1]
+            second_revision_local_file_path = os.path.join(local_folder_path, f"{second_revision}_{os.path.basename(selected_file_path)}")
+            with open(second_revision_local_file_path, "wb") as file:
+                file.write(second_revision_file_content)
+            print(f"File saved to {second_revision_local_file_path}")
+
+            if retry_file_path != "" and retry_file_path != selected_file_path:
+                retry_changes = p4.run_changes("-m10", f"@{one_week_ago_str}", retry_file_path)
+                # 사용자가 리비전 선택
+                _second_revision_index = int(input("비교할 예전 파일 number: "))
+                _first_revision_index = int(input("비교할 최신 파일 number: "))
+
+                _first_revision = changes[_first_revision_index]['change']
+                _second_revision = changes[_second_revision_index]['change']
+                _first_revision_file_content = p4.run_print(f"{retry_file_path}@{_first_revision}")[1]
+                _first_revision_local_file_path = os.path.join(local_folder_path, f"{_first_revision}_{os.path.basename(retry_file_path)}")
+                with open(_first_revision_local_file_path, "wb") as file:
+                    file.write(_first_revision_file_content)
+                print(f"File saved to {_first_revision_local_file_path}")
+
+                # 두 번째 리비전 파일 내용 가져오기 및 로컬에 저장
+                _second_revision_file_content = p4.run_print(f"{retry_file_path}@{_second_revision}")[1]
+                _second_revision_local_file_path = os.path.join(local_folder_path, f"{_second_revision}_{os.path.basename(retry_file_path)}")
+                with open(_second_revision_local_file_path, "wb") as file:
+                    file.write(_second_revision_file_content)
+                print(f"File saved to {_second_revision_local_file_path}")
+            elif retry_file_path == selected_file_path:
+                _first_revision_local_file_path = first_revision_local_file_path
+
+        if revision_choice_index == 1:
+            today = datetime.datetime.now()
+            one_week_ago = today - datetime.timedelta(days=7)
+            one_week_ago_str = one_week_ago.strftime("%Y/%m/%d")
+            one_year_ago = today - datetime.timedelta(days=365)
+            one_year_ago_str = one_year_ago.strftime("%Y/%m/%d")
+            recent_revisions = p4.run_changes("-m1", selected_file_path)
+            if recent_revisions:
+                recent_revision = recent_revisions[0]['change']
+                recent_revision_file_content = p4.run_print(f"{selected_file_path}@{recent_revision}")[1]
+                first_revision_local_file_path = os.path.join(local_folder_path, f"{recent_revision}_{os.path.basename(selected_file_path)}")
+                with open(first_revision_local_file_path, "wb") as file:
+                    file.write(recent_revision_file_content)
+                print(f"Most recent file saved to {first_revision_local_file_path}")
+                # Fetch the oldest revision within the last week
+                oldest_revisions = p4.run_changes(f"-m1", f"{selected_file_path}@{one_year_ago_str},{one_week_ago_str}")
+                if oldest_revisions[0]['change'] != recent_revision:
+                    oldest_revision = oldest_revisions[0]['change']
+                    oldest_revision_file_content = p4.run_print(f"{selected_file_path}@{oldest_revision}")[1]
+                    second_revision_local_file_path = os.path.join(local_folder_path, f"{oldest_revision}_{os.path.basename(selected_file_path)}")
+                    with open(second_revision_local_file_path, "wb") as file:
+                        file.write(oldest_revision_file_content)
+                    print(f"Oldest file saved to {second_revision_local_file_path}")
+                else:
+                    # selected_file_path
+                    print(f"1번 방법과 맞지 않은 상황이네요, 2번 방법(revision 직접 선택)으로 진행 부탁드립니다.")
+            else:
+                print(f"1번 방법이 지금 안 되네요, 2번 방법(revision 직접 선택)으로 진행 부탁드립니다.")
+
+            if retry_file_path != "" and retry_file_path != selected_file_path:
+                recent_revisions = p4.run_changes("-m1", retry_file_path)
+                if recent_revisions:
+                    recent_revision = recent_revisions[0]['change']
+                    recent_revision_file_content = p4.run_print(f"{retry_file_path}@{recent_revision}")[1]
+                    _first_revision_local_file_path = os.path.join(local_folder_path, f"{recent_revision}_{os.path.basename(retry_file_path)}")
+                    with open(_first_revision_local_file_path, "wb") as file:
+                        file.write(recent_revision_file_content)
+                    print(f"Most recent file saved to {_first_revision_local_file_path}")
+                    # Fetch the oldest revision within the last week
+                    oldest_revisions = p4.run_changes(f"-m1",
+                                                      f"{retry_file_path}@{one_year_ago_str},{one_week_ago_str}")
+                    if oldest_revisions[0]['change'] != recent_revision:
+                        oldest_revision = oldest_revisions[0]['change']
+                        oldest_revision_file_content = p4.run_print(f"{retry_file_path}@{oldest_revision}")[1]
+                        _second_revision_local_file_path = os.path.join(local_folder_path,
+                                                                       f"{oldest_revision}_{os.path.basename(retry_file_path)}")
+                        with open(_second_revision_local_file_path, "wb") as file:
+                            file.write(oldest_revision_file_content)
+                        print(f"Oldest file saved to {_second_revision_local_file_path}")
+                    else:
+                        # selected_file_path
+                        print(f"1번 방법과 맞지 않은 상황이네요, 2번 방법(revision 직접 선택)으로 진행 부탁드립니다.")
+                else:
+                    print(f"1번 방법이 지금 안 되네요, 2번 방법(revision 직접 선택)으로 진행 부탁드립니다.")
+            elif retry_file_path == selected_file_path:
+                _first_revision_local_file_path = first_revision_local_file_path
+
+
+        if revision_choice_index == 0:
+            latest_two_revisions = p4.run_changes("-m2", selected_file_path)
+            first_revision = latest_two_revisions[0]['change']
+            second_revision = latest_two_revisions[1]['change']
+            first_revision_file_content = p4.run_print(f"{selected_file_path}@{first_revision}")[1]
+            first_revision_local_file_path = os.path.join(local_folder_path,
+                                                          f"{first_revision}_{os.path.basename(selected_file_path)}")
+            with open(first_revision_local_file_path, "wb") as file:
+                file.write(first_revision_file_content)
+            print(f"File saved to {first_revision_local_file_path}")
+
+            # 두 번째 리비전 파일 내용 가져오기 및 로컬에 저장
+            second_revision_file_content = p4.run_print(f"{selected_file_path}@{second_revision}")[1]
+            second_revision_local_file_path = os.path.join(local_folder_path,
+                                                           f"{second_revision}_{os.path.basename(selected_file_path)}")
+            with open(second_revision_local_file_path, "wb") as file:
+                file.write(second_revision_file_content)
+            print(f"File saved to {second_revision_local_file_path}")
+
+            if retry_file_path != "" and retry_file_path != selected_file_path:
+                latest_two_revisions = p4.run_changes("-m2", retry_file_path)
+                first_revision = latest_two_revisions[0]['change']
+                second_revision = latest_two_revisions[1]['change']
+                first_revision_file_content = p4.run_print(f"{retry_file_path}@{first_revision}")[1]
+                _first_revision_local_file_path = os.path.join(local_folder_path,
+                                                              f"{first_revision}_{os.path.basename(retry_file_path)}")
+                with open(_first_revision_local_file_path, "wb") as file:
+                    file.write(first_revision_file_content)
+                print(f"File saved to {_first_revision_local_file_path}")
+
+                # 두 번째 리비전 파일 내용 가져오기 및 로컬에 저장
+                second_revision_file_content = p4.run_print(f"{retry_file_path}@{second_revision}")[1]
+                _second_revision_local_file_path = os.path.join(local_folder_path,
+                                                               f"{second_revision}_{os.path.basename(retry_file_path)}")
+                with open(_second_revision_local_file_path, "wb") as file:
+                    file.write(second_revision_file_content)
+                print(f"File saved to {_second_revision_local_file_path}")
+            elif retry_file_path == selected_file_path:
+                _first_revision_local_file_path = first_revision_local_file_path
+
+        if revision_choice_index == 3:
+            latest_one_revision = p4.run_changes("-m1", selected_file_path)
+            first_revision = latest_one_revision[0]['change']
+            first_revision_file_content = p4.run_print(f"{selected_file_path}@{first_revision}")[1]
+            first_revision_local_file_path = os.path.join(local_folder_path, f"{first_revision}_{os.path.basename(selected_file_path)}")
+            with open(first_revision_local_file_path, "wb") as file:
+                file.write(first_revision_file_content)
+            print(f"File saved to {first_revision_local_file_path}")
+
+            if retry_file_path != "" and retry_file_path != selected_file_path:
+                latest_one_revision = p4.run_changes("-m1", retry_file_path)
+                first_revision = latest_one_revision[0]['change']
+                first_revision_file_content = p4.run_print(f"{retry_file_path}@{first_revision}")[1]
+                _first_revision_local_file_path = os.path.join(local_folder_path, f"{first_revision}_{os.path.basename(retry_file_path)}")
+                with open(_first_revision_local_file_path, "wb") as file:
+                    file.write(first_revision_file_content)
+                print(f"File saved to {_first_revision_local_file_path}")
+            elif retry_file_path == selected_file_path:
+                _first_revision_local_file_path = first_revision_local_file_path
+
+        pd_pool_id_col = ""
+        pd_sheet_name = ""
+        pd_combine_sheet_name = ""
+        pd_retry_sheet_name = ""
+        if pool_check_choice ==#제거
+
+        elif pool_check_choice ==#제거
+        
+        elif pool_check_choice == #제거
+        elif pool_check_choice ==#제거
+
+        # 두 파일의 모든 시트 읽기
+        xls1 = pd.ExcelFile(first_revision_local_file_path)
+        retry_xls1 = None
+        if _first_revision_local_file_path != "":
+            retry_xls1 = pd.ExcelFile(_first_revision_local_file_path)
+        df1 = pd.read_excel(xls1, sheet_name=pd_sheet_name, header=1, index_col="id")
+        xls2 = None
+        df2 = None
+        df_retry1 = None
+        df_retry2 = None
+        df_combine1 = None
+        df_combine2 = None
+        if _first_revision_local_file_path != "":
+            df_retry1 = pd.read_excel(retry_xls1, sheet_name=retry_sheetName, header=1, index_col=retry_index_id)
+            df_combine1 = pd.read_excel(retry_xls1, sheet_name=combine_sheetName, header=1, index_col=retry_index_id)
+        if revision_choice_index == 3:
+            df2 = df1.copy()
+            df2 = df2.dropna()
+            df_retry2 = df_retry1.copy()
+            df_retry2 = df_retry1.dropna()
+            df_combine2 = df_combine1.copy()
+            df_combine2 = df_combine1.dropna()
+        else:
+            xls2 = pd.ExcelFile(second_revision_local_file_path)
+            df2 = pd.read_excel(xls2, sheet_name=pd_sheet_name, header=1, index_col="id")
+            if _second_revision_local_file_path != "":
+                retry_xls2 = pd.ExcelFile(_second_revision_local_file_path)
+                df_retry2 = pd.read_excel(retry_xls2, sheet_name=retry_sheetName, header=1, index_col=retry_index_id)
+                df_combine2 = pd.read_excel(retry_xls2, sheet_name=combine_sheetName, header=1, index_col=retry_index_id)
+
+       #제거
+        df1[pd_pool_id_col] = df1[pd_pool_id_col].astype(str)
+        df2[pd_pool_id_col] = df2[pd_pool_id_col].astype(str)
+        df1['prop'] = df1['prop'].astype(str)
+        df2['prop'] = df2['prop'].astype(str)
+
+        if revision_choice_index == 3:
+            added_group_ids = df1['group_id']
+            df2 = df1.copy()
+            df2 = df2.dropna()
+        else:
+            df1.set_index(['group_id', pd_pool_id_col, 'prop'], inplace=True)
+            df2.set_index(['group_id', pd_pool_id_col, 'prop'], inplace=True)
+            # 인덱스 차이를 통해 추가된 인덱스와 삭제된 인덱스 확인
+            added_ids = df1.index.difference(df2.index)
+            # 추가된 인덱스의 group_id 추출
+            added_group_ids = [idx[0] for idx in added_ids]
+            df1.reset_index(inplace=True)
+            df2.reset_index(inplace=True)
+
+        # 변경되지 않은 인덱스 중에서 prop 값이 변경된 경우 찾기
+        # common_indexes = df1.index.intersection(df2.index)
+        # for idx in common_indexes:
+        #     if not np.array_equal(df1.loc[idx, 'prop'], df2.loc[idx, 'prop']):
+        #         changed_group_ids.append(idx[0])
+
+        # 중복 제거
+        added_group_ids = list(set(added_group_ids))
+        # 다시 뽑기 list
+        retry_pool_text_list = #제거
+        found_retry_col_list = []
+
+        if added_group_ids != []:
+        #제거
+            local_pool_ids_file_path = os.path.join(local_folder_path, os.path.basename(pool_ids_path))
+            file_classCards_content = p4.run_print(pool_ids_path)[1]  # 첫번째 요소는 파일 정보, 두번째 요소가 파일 내용
+            with open(local_pool_ids_file_path, "wb") as file:
+                file.write(file_classCards_content)
+            print(f"File saved to {local_pool_ids_file_path}")
+            df_pool_ids = pd.read_excel(local_pool_ids_file_path, index_col=pool_ids_index, sheet_name=pool_ids_sheetName, header=1)
+            df_pool_ids.index = df_pool_ids.index.astype(str)
+           #제거
+            with pd.ExcelWriter(abs_path) as writer:
+                sheet_num = 0
+                for added_group_id in added_group_ids:
+                    ##
+                    result_df = pd.DataFrame(columns=result_col_lists)
+                    result_onetime_df = pd.DataFrame(columns=result_col_lists)
+                    result_commbine_df = pd.DataFrame(columns=combine_col_lists)
+                    ##
+                    found_sheet = ""
+                    found_column = None
+                    with pd.ExcelFile(local_design_pool_path) as xls:
+                     #제거
+                        if sheet_num == 0 and pool_check_choice != #제거 and retry_check_go:
+                            _first_write = True
+                            for sheet_name in xls.sheet_names:
+                                if sheet_name == #제거:
+                                    df = pd.read_excel(xls, sheet_name)
+                                    for column in df.columns:
+                                        for retry_pool_text in retry_pool_text_list:
+                                            if df[column].astype(str).str.contains(retry_pool_text).any():
+                                                found_retry_col_list.append(column)
+                                                break
+                                    start_row = None
+                                    _firstloop = True
+                                    temp_df = None
+                                    use_df = None
+                                    for found_retry_col in found_retry_col_list:
+                                        column_names = df.columns
+                                        temp_column_names = None
+                                        found_column_index = column_names.get_loc(found_retry_col)
+                                        counter_to_find_start_col = 0
+                                        _id_column = None
+                                        _name_column = None
+                                        _grade_column = None
+                                        _probability_column = None
+                                        while counter_to_find_start_col < 10:
+                                            counter_to_find_start_col += 1
+                                            _id_column = column_names[found_column_index + counter_to_find_start_col]
+                                            _name_column = column_names[found_column_index + counter_to_find_start_col + 1]
+                                            _grade_column = column_names[found_column_index + counter_to_find_start_col + 2]
+                                            _probability_column = column_names[found_column_index + counter_to_find_start_col + 5]
+                                            if _firstloop == False:
+                                                break
+                                          #제거
+                                            df[_name_column] = df[_name_column].astype(str)
+                                            for index, row in df.iterrows():
+                                                if index > 30:
+                                                    break
+                                             #제거
+                                                if #제거 in row[_name_column] or "#Dec" in row[_name_column]:
+                                                    start_row = index + 1  # "카드 목록"이 있는 행 바로 다음 행의 인덱스를 저장
+                                                    temp_df = df.iloc[(start_row - 1):]
+                                                    use_df = df.iloc[start_row:]
+                                                    counter_to_find_start_col = 99
+                                                    _firstloop = False
+                                                    break
+                                        _count_checker = 0
+                                        for col, value in temp_df.iloc[0].items():
+                                            _count_checker += 1
+                                            if _count_checker >= found_column_index and value ==#제거:
+                                                _probability_column = col
+                                                break
+                                        df_filtered = use_df.dropna(subset=[_id_column, _name_column, _grade_column, _probability_column])
+                                        df_filtered = df_filtered.copy()
+                                        df_filtered[_id_column] = df_filtered[_id_column].astype(str)
+                                        for idx, row in df_filtered.iterrows():
+                                        #제거
+                                            found_id = row[_id_column]
+                                            if found_id in df_pool_ids.index:
+                                                result_id = int(found_id)
+                                                result_name = row[_name_column]
+                                                grade_name = row[_grade_column]
+                                                probability = int(row[_probability_column] * 100000000)
+                                                if probability == 0:
+                                                    probability = ""
+                                                if result_id in df_retry1.index:
+                                                    temp_temp = str(df_retry1.at[result_id, retry_prob_text])
+                                                    probability_check = extract_number(temp_temp)
+                                                    if probability_check is None:
+                                                        probability_check = ""
+                                                else:
+                                                    probability_check = ""  # 또는 적절한 기본값
+                                                if df_retry2 is not None and result_id in df_retry2.index:
+                                                    probability_before = extract_number(str(df_retry2.at[result_id, retry_prob_text]))
+                                                else:
+                                                    probability_before = ""  # 또는 적절한 기본값
+
+                                                is_duplicate = df_retry1.index.duplicated().any()
+                                                if is_duplicate:
+                                                    is_duplicate = #제거
+                                                else:
+                                                    is_duplicate = #제거
+
+                                                check_check = probability == probability_check
+                                                if _first_write == True:
+                                                    _first_write = False
+                                                    new_data = #제거
+                                                    result_onetime_df = pd.concat([result_onetime_df, new_data],
+                                                                                  ignore_index=True)
+                                                else:
+                                                    new_data = #제거
+                                                    result_onetime_df = pd.concat([result_onetime_df, new_data],
+                                                                                  ignore_index=True)
+                            result_onetime_df.to_excel(writer, sheet_name=#제거, index=False)
+                        #제거
+                        if sheet_num == 0 and pool_check_choice != "#제거 and retry_check_go:
+                            _start_row = None
+                            _start_col = None
+                            _first_write = True
+                            temp_df = None
+                            use_df = None
+                            for sheet_name in xls.sheet_names:
+                                if sheet_name in (#제거):
+                                    df = pd.read_excel(xls, sheet_name)
+                                    for column in df.columns:
+                                        if df[column].astype(str).str.startswith(#제거).any():
+                                            _start_col = column
+                                            _start_row = df[column].astype(str).str.startswith(#제거").idxmax()
+                                            break
+                                    if _start_col is not None:
+                                        column_names = df.columns
+                                        temp_column_names = None
+                                        found_column_index = column_names.get_loc(_start_col)
+                                        _id_column = column_names[found_column_index + 1]
+                                        _probability_column = None
+                                        _probability_column2 = None
+                                        _name_column = column_names[found_column_index + 2]
+                                        _grade_column = column_names[found_column_index + 4]
+                                        temp_df = df.iloc[_start_row:]
+                                        use_df = df.iloc[(_start_row + 1):]
+                                        _count_checker = 0
+                                        for col, value in temp_df.iloc[0].items():
+                                            _count_checker += 1
+                                            if _count_checker >= found_column_index and value == "#제거
+                                                _probability_column = col
+                                            elif _count_checker >= found_column_index and value == "#제거
+                                                _probability_column2 = col
+                                                break
+                                        df_filtered = use_df.dropna(subset=[_id_column, _name_column, _grade_column, _probability_column, _probability_column2])
+                                        df_filtered = df_filtered.copy()
+                                        df_filtered[_id_column] = df_filtered[_id_column].astype(str)
+                                        for idx, row in df_filtered.iterrows():
+                                            #제거
+                                            found_id = row[_id_column]
+                                            if found_id in df_pool_ids.index:
+                                                result_id = int(found_id)
+                                                result_name = row[_name_column]
+                                                grade_name = row[_grade_column]
+                                                probability = int(row[_probability_column] * 100000000)
+                                                probability2 = int(row[_probability_column2] * 100000000)
+                                                design_prob_list_len = 0
+                                                if probability != 0 and probability2 != 0:
+                                                    design_prob_list_len = 2
+                                                probability_check = ""
+                                                check_check = ""
+                                                probability_before = ""
+                                                probability_check2 = ""
+                                                check_check2 = ""
+                                                probability_before2 = ""
+                                                if probability == 0:
+                                                    probability = ""
+                                                if probability2 == 0:
+                                                    probability2 = ""
+                                                if result_id in df_combine1.index:
+                                                    _temp_list = df_combine1.at[result_id, retry_prob_text]
+                                                    temp_list = []
+                                                    if isinstance(_temp_list, float):
+                                                        temp_list = [_temp_list]
+                                                    elif isinstance(_temp_list, str):
+                                                        temp_list = [_temp_list]
+                                                    else:
+                                                        for item in _temp_list:
+                                                            temp_list.append(item)
+                                                    count_temp_list = -1
+
+                                                    for item in temp_list:
+                                                        count_temp_list += 1
+                                                        if count_temp_list == 0:
+                                                            if len(temp_list) == 1 and design_prob_list_len != 2:
+                                                                probability_check = extract_number(str(item))
+                                                            else:
+                                                                probability_check2 = extract_number(str(item))
+                                                        elif count_temp_list == 1:
+                                                            probability_check = extract_number(str(item))
+                                                    if probability_check is None:
+                                                        probability_check = ""
+                                                    if probability_check2 is None:
+                                                        probability_check2 = ""
+                                                else:
+                                                    probability_check = ""
+                                                    probability_check2 = ""
+
+                                                if df_combine2 is not None and result_id in df_combine2.index:
+                                                    _temp_list = df_combine2.at[result_id, retry_prob_text]
+                                                    temp_list = []
+                                                    if isinstance(_temp_list, float):
+                                                        temp_list = [_temp_list]
+                                                    elif isinstance(_temp_list, str):
+                                                        temp_list = [_temp_list]
+                                                    else:
+                                                        for item in _temp_list:
+                                                            temp_list.append(item)
+                                                    count_temp_list = -1
+                                                    for item in temp_list:
+                                                        count_temp_list += 1
+                                                        if count_temp_list == 0:
+                                                            if len(temp_list) == 1 and design_prob_list_len != 2:
+                                                                probability_before = extract_number(str(item))
+                                                            else:
+                                                                probability_before2 = extract_number(str(item))
+                                                        elif count_temp_list == 1:
+                                                            probability_before = extract_number(str(item))
+                                                    if probability_before is None:
+                                                        probability_before = ""
+                                                    if probability_before2 is None:
+                                                        probability_before2 = ""
+                                                else:
+                                                    probability_before = ""  # 또는 적절한 기본값
+                                                    probability_before2 = ""
+                                                check_check = str(probability) == str(probability_check)
+                                                check_check2 = str(probability2) == str(probability_check2)
+                                                if _first_write == True:
+                                                    _first_write = False
+                                                    # combine_col_lists = [#제거]
+                                                    new_data = #제거
+                                                    result_commbine_df = pd.concat([result_commbine_df, new_data],
+                                                                                  ignore_index=True)
+                                                else:
+                                                    new_data = #제거
+                                                    result_commbine_df = pd.concat([result_commbine_df, new_data],
+                                                                                   ignore_index=True)
+                            result_commbine_df.to_excel(writer, sheet_name=#제거", index=False)
+                        for sheet_name in xls.sheet_names:
+                            df = pd.read_excel(xls, sheet_name)
+                            found_sheet = sheet_name
+                            # 각 컬럼을 확인하여 특정 텍스트가 포함되어 있는지 검사
+                            for column in df.columns:
+                                if df[column].astype(str).str.endswith(added_group_id).any():
+                                    found_column = column
+                                    break
+
+                            # 컬럼을 찾았으면 더 이상의 시트 검사를 중단
+                            if found_column is not None:
+                                break
+                        # 찾은 컬럼을 기반으로 체크리스트 작성
+                        if found_column is not None:
+                            column_names = df.columns
+                            found_column_index = column_names.get_loc(found_column)
+                            counter_to_find_start_col = 0
+                            _id_column = None
+                            _name_column = None
+                            _grade_column = None
+                            _probability_column = None
+                            start_row = None
+                            while counter_to_find_start_col < 10:
+                                if start_row is not None:
+                                    break
+                                counter_to_find_start_col += 1
+                                _id_column = column_names[found_column_index + counter_to_find_start_col]
+                                _name_column = column_names[found_column_index + counter_to_find_start_col + 1]
+                                _grade_column = column_names[found_column_index + counter_to_find_start_col + 2]
+                                _probability_column = column_names[found_column_index + counter_to_find_start_col + 6]
+                                if pool_check_choice == #제거
+                                    _probability_column = column_names[found_column_index + counter_to_find_start_col + 5]
+                                elif server_index == 3 and pool_check_choice == #제거
+                                    _probability_column = column_names[found_column_index + counter_to_find_start_col + 5]
+                             #제거
+                                df[_name_column] = df[_name_column].astype(str)
+                                for index, row in df.iterrows():
+                                    if index > 30:
+                                        break
+                                   #제거
+                                    if #제거 in row[_name_column] or "#Dec" in row[_name_column]:
+                                        start_row = index + 1  # "
+                                        break  # 
+                  
+                            temp_df = None
+                            if start_row is not None:
+                                temp_df = df.iloc[(start_row - 1):]
+                                df = df.iloc[start_row:]  
+                            _count_checker = -1
+                            for col, value in temp_df.iloc[0].items():
+                                _count_checker += 1
+                                if _count_checker >= found_column_index and value == #제거:
+                                    _probability_column = col
+                                    break
+                            df_filtered = df.dropna(subset=[_id_column, _name_column, _grade_column, _probability_column])
+                            df_filtered = df_filtered.copy()
+                            df_filtered[_id_column] = df_filtered[_id_column].astype(str)
+                            filtered_df1 = df1[df1['group_id'] == added_group_id].copy()
+                            filtered_df1[pd_pool_id_col] = filtered_df1[pd_pool_id_col].astype(str)
+                            filtered_df2 = None
+                            if revision_choice_index != 3 and added_group_id in df2['group_id'].values:
+                                filtered_df2 = df2[df2['group_id'] == added_group_id].copy()
+                                filtered_df2[pd_pool_id_col] = filtered_df2[pd_pool_id_col].astype(str)
+                            is_duplicate = filtered_df1[pd_pool_id_col].duplicated().any()
+                            if is_duplicate:
+                                is_duplicate = #제거
+                            else:
+                                is_duplicate = #제거
+                            filtered_df1.set_index(pd_pool_id_col, inplace=True)
+                            if filtered_df2 is not None:
+                                filtered_df2.set_index(pd_pool_id_col, inplace=True)
+                            first_write = True
+                            for idx, row in df_filtered.iterrows():
+                               #제거
+                                found_id = row[_id_column]
+                                if found_id in df_pool_ids.index:
+                                    result_id = found_id
+                                    result_name = row[_name_column]
+                                    grade_name = row[_grade_column]
+                                    probability = int(row[_probability_column] * 100000000)
+                                    if probability == 0:
+                                        probability = ""
+                                    if result_id in filtered_df1.index:
+                                        probability_check = extract_number(str(filtered_df1.at[result_id, 'prop']))
+                                        if probability_check is None:
+                                            probability_check = ""
+                                    else:
+                                        probability_check = ""  # 또는 적절한 기본값
+                                    if filtered_df2 is not None and result_id in filtered_df2.index:
+                                        probability_before = extract_number(str(filtered_df2.at[result_id, 'prop']))
+                                    else:
+                                        probability_before = ""  # 또는 적절한 기본값
+
+                                    check_check = probability == probability_check
+                                    # 추출한 데이터를 DataFrame에 추가
+                                    if first_write == True:
+                                        first_write = False
+                                        new_data = p#제거
+                                        result_df = pd.concat([result_df, new_data], ignore_index=True)
+                                    else:
+                                        new_data = #제거
+                                        result_df = pd.concat([result_df, new_data], ignore_index=True)
+                    # 결과를 엑셀로 저장
+                    nameSheet = sheet_num
+                    sheet_num = sheet_num + 1
+                    result_df.to_excel(writer, sheet_name=str(nameSheet), index=False)
+            workbook = load_workbook(abs_path)
+            column_to_autofit = 6
+            red_color = Font(color="FF0000")
+            blue_color = Font(color="0000FF")
+            gray_color = Font(color="808080")
+            yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
+            #
+            target_columns = ['#제거']
+
+            # 모든 시트를 순회
+            for sheet_name in workbook.sheetnames:
+                sheet = workbook[sheet_name]
+                header = [cell.value for cell in sheet[1]]
+                target_indexes = [idx for idx, col in enumerate(header) if col in target_columns]
+                for row in sheet.iter_rows(values_only=False):
+                    for idx in target_indexes:
+                        cell = row[idx]
+                        # 셀 값이 "" 이거나 "n/a" 인 경우
+                        if cell.value == "" or cell.value is None:
+                            # 해당 셀과 앞의 세 셀에 배경색 적용
+                            start_index = max(idx - 3, 0)  # 인덱스가 0보다 작아지지 않도록
+                            for i in range(start_index, idx + 1):
+                                row[i].fill = yellow_fill
+                    for cell in row:
+                        if cell.value in ["Fail", "False", #제거"] or cell.value == False:
+                            cell.font = red_color
+                        elif cell.value in ["Pass", "True", "#제거"] or cell.value == True:
+                            cell.font = blue_color
+                        elif cell.value in ["nan", "N/A"] or cell.value is None:
+                            cell.font = gray_color
+            workbook.save(abs_path)
+
+except Exception as e:
+    print(e)
+    traceback.print_exc()
+    input("Press Enter to exit...")
+finally:
+    p4.disconnect()  # 연결 해제
